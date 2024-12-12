@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Dict
 
-
 # Response model for individual predictions
 class Prediction(BaseModel):
     class_id: int

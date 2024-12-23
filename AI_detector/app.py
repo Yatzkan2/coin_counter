@@ -1,11 +1,21 @@
 from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from ultralytics import YOLO
 import numpy as np
 import cv2
 import utils
 import schemas
-
+#logger
+import logging
+import sys
+# Configure logging
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("app")
 # Import the new settings
 from config import settings
 
@@ -14,6 +24,13 @@ app = FastAPI(
     version=settings.API_VERSION
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Load YOLO model using settings
 model = YOLO(settings.MODEL_WEIGHTS_PATH)
 
@@ -24,6 +41,7 @@ async def read_root():
 @app.post("/predict/", response_model=schemas.PredictionResponse)
 async def upload_image(file: UploadFile = File(...)):
     # Check allowed image types from settings
+    logger.info("route precidt")
     if file.content_type not in settings.ALLOWED_IMAGE_TYPES:
         return JSONResponse({
             "error": f"Only {', '.join(settings.ALLOWED_IMAGE_TYPES)} images are allowed"

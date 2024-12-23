@@ -42,3 +42,5 @@ def test_predict_image():
             assert isinstance(pred["confidence"], float)
             assert isinstance(pred["class_id"], int)
             assert isinstance(pred["class_name"], str)
+            assert pred["class_id"] == 4
+            assert pred["class_name"] == "5_NIS"

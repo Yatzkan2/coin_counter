@@ -12,10 +12,11 @@ export const testAccess = async () => {
     }
 }
 
-export const predict = async (data: string) => {
+export const predict = async (data: string | URL | Request) => {
     console.log('prefetch...');
     try {
-        // Fetch the image
+        // Fetch the image 
+        
         const blobRes = await fetch(data);
         const blob = await blobRes.blob();
 
@@ -78,7 +79,7 @@ export const predict = async (data: string) => {
         throw error;
     }
 }
-//################### WRKING IN BROWSER ###################
+//################### WORKING IN BROWSER ###################
 // import axios from 'axios';
 
 // const API_URL = 'http://10.0.0.9:8000';

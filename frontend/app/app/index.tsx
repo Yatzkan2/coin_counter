@@ -9,7 +9,6 @@ import { usePhotoStore } from './store/photoStore';
 import { Prediction } from './types';
 import Button from '@/components/Button';
 import ImageViewer from '@/components/ImageViewer';
-import Camera from '@/components/Camera';
 import { Link, router } from 'expo-router';
 
 const PlaceholderImage = require('@/assets/images/favicon.png');
@@ -67,6 +66,7 @@ export default function Index() {
 
 //################### RENDERING START ###################//
   return (
+    <ScrollView>
     <View style={styles.container}>
       {/* selected image view */}
       {/* white text color */}
@@ -96,6 +96,7 @@ export default function Index() {
         <Button label="test access to server" onPress={testAccess}></Button>
       </View>
     </View>
+    </ScrollView>
   );
   //################### RENDERING END ###################//
 }

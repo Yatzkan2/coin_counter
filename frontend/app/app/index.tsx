@@ -1,26 +1,26 @@
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { predict, testAccess } from '@/api_calls/api_calls';
 import { predictionSum } from './utils';
 
 import { useState } from 'react';
+import { usePhotoStore } from './store/photoStore';
 
 import { Prediction } from './types';
 import Button from '@/components/Button';
 import ImageViewer from '@/components/ImageViewer';
+import Camera from '@/components/Camera';
+import { Link, router } from 'expo-router';
 
 const PlaceholderImage = require('@/assets/images/favicon.png');
 
 export default function Index() {
 
   //################### STATE MANAGEMENT START ###################//
+  const {photoUri, setPhotoUri} = usePhotoStore(state => state);
+
   //image selection states
   const [selectedImage, setSelectedImage] = useState<string | URL | Request >("");
-
-  //camera states
-  const [facing, setFacing] = useState<CameraType>('back');
-  const [permission, requestPermission] = useCameraPermissions();
 
   //prediction states
   const [prediction, setPrediction] = useState<Prediction | undefined>(undefined);
@@ -29,28 +29,10 @@ export default function Index() {
   //################### STATE MANAGEMENT END ###################//
 
   
-  if (!permission) {
-    // Camera permissions are still loading.
-    return <View />;
-  }
 
-  if (!permission.granted) {
-    // Camera permissions are not granted yet.
-    return (
-      <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
-    );
-  }
+  //################### HANDLERS START ###################//
 
-//################### HANDLERS START ###################//
-
-  //camera handlers
-  const toggleCameraFacing = (): void => {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
-  };
-
+  
   //prediction handlers
   const handlePrediction = async () => {
     const predRes = await predict(selectedImage);
@@ -76,6 +58,7 @@ export default function Index() {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
+      setPhotoUri(result.assets[0].uri);
     } else {
       alert('You did not select any image.');
     }
@@ -85,32 +68,33 @@ export default function Index() {
 //################### RENDERING START ###################//
   return (
     <View style={styles.container}>
-      <ScrollView >
-      <CameraView style={styles.camera} facing={facing}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
-          </TouchableOpacity>
-        </View>
-      </CameraView>
+      {/* selected image view */}
+      {/* white text color */}
+      
+      <View style={{}}>
+        {photoUri &&  <Text style={{ color: 'white' }}>{`${photoUri}`}</Text>}
+      </View>
 
+      {/* Image view */}
       <View style={styles.imageContainer}>
-        <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
+        <ImageViewer imgSource={PlaceholderImage} selectedImage={photoUri} />
       </View>
-      <View>
+
+      {/* Prediction */}
+      {/* <View>
         <Text style={{color:"white"}}>
-          prediction is: 
-          {sum ? ` ${sum}` : " No prediction yet"} 
+        prediction is: 
+        {sum ? ` ${sum}` : " No prediction yet"} 
         </Text>
+      </View> */}
       
-      </View>
-      
+      {/* Buttons */}
       <View style={styles.footerContainer}>
+        <Button theme="primary" label="Open camera" onPress={() => {router.push("/Camera")}}/>
         <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
         <Button label="Use this photo" onPress={handlePrediction}/>
         <Button label="test access to server" onPress={testAccess}></Button>
       </View>
-      </ScrollView>
     </View>
   );
   //################### RENDERING END ###################//

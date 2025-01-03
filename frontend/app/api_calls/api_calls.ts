@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_URL = 'http://10.0.0.9:8000';
+import { Prediction } from '@/app/types';
+const API_URL = 'http://10.0.0.14:8000';
 
 export const testAccess = async () => {
     try {
@@ -12,7 +12,7 @@ export const testAccess = async () => {
     }
 }
 
-export const predict = async (data: string | URL | Request) => {
+export const predict = async (data: string | URL | Request): Promise<Prediction> => {
     console.log('prefetch...');
     try {
         // Fetch the image 

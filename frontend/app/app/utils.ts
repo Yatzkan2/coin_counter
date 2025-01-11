@@ -11,4 +11,5 @@ export const predictionSum = (prediction: Prediction): number => {
     }
     const predVals = prediction.predictions.map((pred) => values[pred.class_name]);
     return predVals.reduce((acc, curr) => acc + curr, 0);
+    //prediction.predictions.reduce((acc, curr) => values[curr.class_name] + acc, 0)
 }

@@ -16,10 +16,10 @@ const PlaceholderImage = require('@/assets/images/favicon.png');
 export default function Index() {
 
   //################### STATE MANAGEMENT START ###################//
-  const {photoUri, setPhotoUri} = usePhotoStore(state => state);
-
+  
   //image selection states
-  const [selectedImage, setSelectedImage] = useState<string | URL | Request >("");
+  //const [selectedImage, setSelectedImage] = useState<string | URL | Request >("");
+  const {photoUri, setPhotoUri} = usePhotoStore(state => state);
 
   //prediction states
   const [prediction, setPrediction] = useState<Prediction | undefined>(undefined);
@@ -34,14 +34,18 @@ export default function Index() {
   
   //prediction handlers
   const handlePrediction = async () => {
-    const predRes = await predict(selectedImage);
-    setPrediction(predRes);
-    setSum(predictionSum(predRes));
-    if(prediction) {
-      console.log('Prediction:', prediction.predictions);
-    }
-    else {
-      console.log('No prediction');
+    try {
+      const predRes = await predict(photoUri);
+      setPrediction(predRes); 
+      setSum(predictionSum(predRes));
+      if(prediction) {
+        console.log('Prediction:', prediction.predictions);
+      }
+      else {
+        console.log('No prediction');
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -56,7 +60,7 @@ export default function Index() {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      //setSelectedImage(result.assets[0].uri);
       setPhotoUri(result.assets[0].uri);
     } else {
       alert('You did not select any image.');
@@ -66,27 +70,30 @@ export default function Index() {
 
 //################### RENDERING START ###################//
   return (
-    <ScrollView>
+    <ScrollView style={styles.scrollView}>
     <View style={styles.container}>
       {/* selected image view */}
       {/* white text color */}
       
       <View style={{}}>
-        {photoUri &&  <Text style={{ color: 'white' }}>{`${photoUri}`}</Text>}
+        {
+          photoUri &&  
+          <View style={styles.imageContainer}>
+            <ImageViewer imgSource={PlaceholderImage} selectedImage={photoUri} />
+          </View>
+        }
       </View>
 
       {/* Image view */}
-      <View style={styles.imageContainer}>
-        <ImageViewer imgSource={PlaceholderImage} selectedImage={photoUri} />
-      </View>
+      
 
       {/* Prediction */}
-      {/* <View>
-        <Text style={{color:"white"}}>
+      <View>
+        <Text style={styles.text}>
         prediction is: 
         {sum ? ` ${sum}` : " No prediction yet"} 
         </Text>
-      </View> */}
+      </View>
       
       {/* Buttons */}
       <View style={styles.footerContainer}>
@@ -103,17 +110,28 @@ export default function Index() {
 
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#25292e',
-    justifyContent: 'center',
+    //justifyContent: 'center',
+    alignItems: 'center',
+    
   },
   imageContainer: {
-    flex: 1,
+    margin: 20,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 18,
+    //flex: 1,
   },
   footerContainer: {
-    flex: 1 / 3,
+    //flex: 1 / 3,
     alignItems: 'center',
+    paddingBottom: 20,
   },
   camera: {
     flex: 1,
@@ -130,7 +148,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     color: 'white',
   },

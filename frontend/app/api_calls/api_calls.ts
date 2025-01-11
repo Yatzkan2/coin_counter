@@ -12,11 +12,12 @@ export const testAccess = async () => {
     }
 }
 
-export const predict = async (data: string): Promise<Prediction> => {
+export const predict = async (data: string | undefined): Promise<Prediction> => {
     console.log('prefetch...');
     try {
         // Fetch the image 
-        
+        if (!data) { throw new Error('No image provided'); }
+
         const blobRes = await fetch(data);
         const blob = await blobRes.blob();
 

@@ -62,6 +62,7 @@ export default function Index() {
     if (!result.canceled) {
       //setSelectedImage(result.assets[0].uri);
       setPhotoUri(result.assets[0].uri);
+      setSum(undefined);
     } else {
       alert('You did not select any image.');
     }
@@ -72,27 +73,22 @@ export default function Index() {
   return (
     <ScrollView style={styles.scrollView}>
     <View style={styles.container}>
-      {/* selected image view */}
-      {/* white text color */}
       
       <View style={{}}>
+        {/* Image view */}
         {
-          photoUri &&  
+          photoUri ?  
           <View style={styles.imageContainer}>
             <ImageViewer imgSource={PlaceholderImage} selectedImage={photoUri} />
-          </View>
+          </View> :
+          <Text style={styles.text}>Take a photo or select an image from the library</Text>
         }
       </View>
 
-      {/* Image view */}
-      
 
       {/* Prediction */}
       <View>
-        <Text style={styles.text}>
-        prediction is: 
-        {sum ? ` ${sum}` : " No prediction yet"} 
-        </Text>
+        {sum && <Text style={{color: 'white', fontSize: 20}}>Sum: {sum}</Text>}
       </View>
       
       {/* Buttons */}
@@ -111,13 +107,16 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   scrollView: {
-    flex: 1,
+    //flex: 1,
+    backgroundColor: '#25292e',
+
   },
   container: {
     flex: 1,
     backgroundColor: '#25292e',
-    //justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 20,
     
   },
   imageContainer: {
@@ -146,10 +145,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'flex-end',
     alignItems: 'center',
+    margin: 20,
   },
   text: {
     fontSize: 30,
     fontWeight: 'bold',
     color: 'white',
+    padding: 20,
+    textAlign: 'center',
   },
 });

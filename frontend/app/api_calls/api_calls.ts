@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { Prediction } from '@/app/types';
-const API_URL = 'http://10.0.0.8:8000';
+const API_URL = 'http://10.0.0.14:8000';
 
 export const testAccess = async () => {
+    console.log(`Testing access to ${API_URL}...`);
     try {
         const response = await axios.get(API_URL);
         console.log(response.status);

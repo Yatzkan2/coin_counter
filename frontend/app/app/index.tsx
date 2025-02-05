@@ -1,7 +1,9 @@
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { predict, testAccess } from '@/api_calls/api_calls';
-import { predictionSum } from './utils';
+import { predictionSum } from './utils'; 
+
+import { detect } from '../model/inference';
 
 import { useState } from 'react';
 import { usePhotoStore } from './store/photoStore';
@@ -33,6 +35,17 @@ export default function Index() {
 
   
   //prediction handlers
+  // const handlePrediction = async () => {
+  //   try {
+  //     const predRes = await detect(photoUri);
+  //       console.log('PREDICTION:', predRes);
+  //     }
+  
+      
+  //    catch (error) {
+  //     console.error(error);
+  //   }
+  // }
   const handlePrediction = async () => {
     try {
       const predRes = await predict(photoUri);
@@ -88,12 +101,14 @@ export default function Index() {
 
       {/* Prediction */}
       <View>
-        {sum && <Text style={{color: 'white', fontSize: 20}}>Sum: {sum}</Text>}
+        {sum && <Text style={{color: 'white', fontSize: 20}}>Sum: {Math.round(sum * 10) / 10}</Text>}
       </View>
       
       {/* Buttons */}
       <View style={styles.footerContainer}>
         <Button theme="primary" label="Open camera" onPress={() => {router.push("/Camera")}}/>
+        <Button theme="primary" label="Login" onPress={() => {router.push("/LoginScreen")}}/>
+
         <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
         <Button label="Use this photo" onPress={handlePrediction}/>
         <Button label="test access to server" onPress={testAccess}></Button>

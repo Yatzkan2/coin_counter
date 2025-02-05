@@ -1,4 +1,5 @@
 import { Prediction } from "./types";
+const bcrypt = require('bcrypt-react-native');
 
 export const predictionSum = (prediction: Prediction): number => {
     const values = {
@@ -13,3 +14,16 @@ export const predictionSum = (prediction: Prediction): number => {
     return predVals.reduce((acc, curr) => acc + curr, 0);
     //prediction.predictions.reduce((acc, curr) => values[curr.class_name] + acc, 0)
 }
+
+export const hashPassword = async (password:string) => {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
+};
+
+export const verifyPassword = async (password:string, hashedPassword:string) => {
+  const match = await bcrypt.compare(password, hashedPassword);
+  return match;
+};
+
+

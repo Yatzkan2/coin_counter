@@ -13,3 +13,10 @@ export type CameraProps = {
     facing: CameraType,
     toggleCameraFacing: () => void
 }
+
+export type FormValues = {
+    email: string,
+    password: string,
+    phone: string
+    username: string,
+}
